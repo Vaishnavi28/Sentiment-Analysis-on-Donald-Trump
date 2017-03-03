@@ -10,11 +10,18 @@ library(plyr),library(tm),library(wordcloud)
 
 ## Steps:
 This is a Lexicon based sentiment analysis:
-1.Get Twitter Authentication from https://dev.twitter.com/ account- library(twitteR) ,(ROauth)
+
+1. Get Twitter Authentication from https://dev.twitter.com/ account- library(twitteR) ,(ROauth)
+
 2. Scrapping recent tweets from different cities using Lattitude & Longittude 
+
 3. Getting addresses of tweets using google maps API(ggmaps package from R)
+
 4. Creating a word cloud of the tweets to visualize the most common words in the tweets and have a general feeling of the tweets.
+
 5.The most frequent words in the tweets are ‘muslim’, ‘muslims’, ‘ban’. This suggests that most tweets were on Trump’s 
 recent idea of temporarily banning Muslims from entering the US.
-5. Save data as csv & import it to Tableau.
-6. Graphical representation for Various City & State.
+
+6. Save data as csv & import it to Tableau.
+
+7. Graphical representation for Various City & State.
