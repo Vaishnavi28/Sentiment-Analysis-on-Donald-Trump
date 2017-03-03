@@ -31,7 +31,7 @@ save(authenticate, file="twitter authentication.Rdata")
 
 #Get sample tweets from various cities
 
-N=500  # no of tweets to request from each query
+N=50  # no of tweets to request from each query
 S=200  # radius in miles
 lats=c(38.9,40.7,37.8,39,37.4,28,30,42.4,48,36,32.3,33.5,34.7,33.8,37.2,41.2,46.8,
        46.6,37.2,43,42.7,40.8,36.2,38.6,35.8,40.3,43.6,40.8,44.9,44.9)
@@ -47,3 +47,50 @@ lons=c(-77,-74,-122,-105.5,-122,-82.5,-98,-71,-122,-115,-86.3,-112,-92.3,-84.4,-
 donald=do.call(rbind,lapply(1:length(lats), function(i) searchTwitter('Donald+Trump',
                                                                       lang="en",n=N,resultType="recent",
                                                                       geocode=paste(lats[i],lons[i],paste0(S,"mi"),sep=","))))
+
+#50 tweets were requested but the API can only return 40
+
+#Let's get the latitude and longitude of each tweet, the tweet itself, 
+#how many times it was re-twitted and favorited, the date and time it was twitted, etc.
+
+donaldlat=sapply(donald, function(x) as.numeric(x$getLatitude()))
+donaldlat=sapply(donaldlat, function(z) ifelse(length(z)==0,NA,z))  
+
+donaldlon=sapply(donald, function(x) as.numeric(x$getLongitude()))
+donaldlon=sapply(donaldlon, function(z) ifelse(length(z)==0,NA,z))  
+
+donalddate=lapply(donald, function(x) x$getCreated())
+donalddate=sapply(donalddate,function(x) strftime(x, format="%Y-%m-%d %H:%M:%S",tz = "UTC"))
+
+donaldtext=sapply(donald, function(x) x$getText())
+donaldtext=unlist(donaldtext)
+
+isretweet=sapply(donald, function(x) x$getIsRetweet())
+retweeted=sapply(donald, function(x) x$getRetweeted())
+retweetcount=sapply(donald, function(x) x$getRetweetCount())
+
+favoritecount=sapply(donald, function(x) x$getFavoriteCount())
+favorited=sapply(donald, function(x) x$getFavorited())
+
+# creating a data frame from above data:
+data=as.data.frame(cbind(tweet=donaldtext,date=donalddate,lat=donaldlat,lon=donaldlon,
+                         isretweet=isretweet,retweeted=retweeted, retweetcount=retweetcount,favoritecount=favoritecount,favorited=favorited))
+
+#First, let's create a word cloud of the tweets.
+#A word cloud helps us to visualize the most common words in the tweets and have a general feeling of the tweets.
+
+# Create corpus
+corpus=Corpus(VectorSource(data$tweet))
+
+# Convert to lower-case
+corpus=tm_map(corpus,tolower)
+
+# Remove stopwords
+corpus=tm_map(corpus,function(x) removeWords(x,stopwords()))
+
+# convert corpus to a Plain Text Document
+corpus=tm_map(corpus,PlainTextDocument)
+str(corpus)
+col=brewer.pal(6,"Dark2")
+wordcloud(corpus, min.freq=25, scale=c(5,2),rot.per = 0.25,
+          random.color=T, max.word=45, random.order=F,colors=col)
