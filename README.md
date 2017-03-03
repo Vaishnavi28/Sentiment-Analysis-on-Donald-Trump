@@ -19,8 +19,7 @@ This is a Lexicon based sentiment analysis:
 
 4. Creating a word cloud of the tweets to visualize the most common words in the tweets and have a general feeling of the tweets.
 
-5.The most frequent words in the tweets are ‘muslim’, ‘muslims’, ‘ban’. This suggests that most tweets were on Trump’s 
-recent idea of temporarily banning Muslims from entering the US.
+5. The most frequent words in the tweets are ‘muslim’, ‘muslims’, ‘ban’. This suggests that most tweets were on Trump’s recent idea of temporarily banning Muslims from entering the US.
 
 6. Save data as csv & import it to Tableau.
 
